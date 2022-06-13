@@ -214,6 +214,20 @@ public class Matrix {
         Matrix my_mat = new Matrix(tab);
         return my_mat.transpose();
     }
+    
+    public Matrix errGen(int w) {
+        Matrix err = new Matrix(1,cols);
+        for (int i = 0; i<w ; i++) {
+            int tmp = 0;
+            do {
+                Random random = new Random();
+                tmp = random.nextInt(cols);
+            } while (err.data[0][tmp]==1);
+            err.data[0][tmp]=1;
+        }
+        return err;
+    }
+
 
 }
 
