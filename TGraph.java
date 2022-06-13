@@ -51,67 +51,64 @@ public class TGraph {
     }
 
     public Matrix decode(Matrix code, int rounds){
-        Matrix x = new Matrix(1,n_c);
-        Matrix s = new Matrix(1,n_r);
+        int i,j,k;
+        boolean verif = true;
+        byte[][] bcorrect = new byte[code.getRows()][code.getCols()];
 
-        for(int i = 0; i<n_c;i++){
-            right[i][0]=code.getElem(0,i);
+        // Initialisation
+        for(j=0;j<right.length;j++){
+            right[j][0]=code.getElem(0,j);
         }
 
-        for(int a=0;a<rounds;a++){
-
-            for(int i=0;i<n_r;i++){
-                left[i][0]=0;
-                for(int k=1;k<=w_r;k++){
-                    left[i][0]+=right[left[i][k]][0];
+        // Boucle principale
+        for(int lim=0;lim<rounds;lim++){
+            // Calcul des parités
+            for(i=0;i<left.length;i++){
+                left[i][0] = 0;
+                for(k=1;k<w_r+1;k++){
+                    left[i][0] = (left[i][0] + right[left[i][k]][0])%2;
                 }
-                left[i][0]=left[i][0]%2;
-                s.setElem(0,i,(byte)left[i][0]);
             }
 
-            boolean verif=true;
-
-            for(int i = 0; i<n_r;i++){
-                if(left[i][0]==(byte)1){
-                    verif=false;
+            // Vérification
+            for(i = 0; i< left.length;i++){
+                if(left[i][0]==(byte)1) {
+                    verif = false;
                     break;
                 }
             }
             if(verif){
-                int ind = 0;
-                for (int i=0;i<n_c;i++){
-                    x.setElem(0,i,(byte)right[i][0]);
+                for(j=0;j<right.length;j++){
+                    bcorrect[0][j] = (byte) right[j][0];
                 }
-                return x;
+                Matrix correct = new Matrix(bcorrect);
+                return correct;
             }
-            else{
-                int max=0;
-                for(int p=1;p<n_c;p++){
-                    int count =0;
-                    for(int q=1; q<=w_c;q++){
-                        count += left[right[p][q]][0];
-                    }
-                    if(count>max){
-                        max =count;
-                    }
+
+            // Calcul du max
+            int max = 0;
+            int count;
+            for(j=0;j<right.length;j++){
+                count = 0;
+                for(k=1;k<=w_c;k++){
+                    count += left[right[j][k]][0];
+                }
+                if(count>max){max = count;}
+
+                // Renversement de bits
+                if(count == max){
+                    right[j][0] = (1 - right[j][0])%2;
                 }
 
-                for(int p=1; p<n_c;p++){
-                    int count=0;
-                    for(int q=1;q<=w_c;q++){
-                        count += left[right[p][q]][0];
-                    }
-                    if(count==max){
-                        right[p][0] = (right[p][0]+1)%2;
-                    }
-                }
             }
-        }
 
-        for(int i=0;i<n_c;i++){
-            x.setElem(0,i,(byte)-1);
+
         }
-        return x;
+        for(j=0;j<right.length;j++){
+            bcorrect[0][j] = -1;
+        }
+        Matrix correct = new Matrix(bcorrect);
+        return correct;
     }
 
 }
