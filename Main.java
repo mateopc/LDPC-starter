@@ -108,6 +108,50 @@ public class Main {
         Matrix x = u2048.multiply(G2048)
             
         TGraph graph = new TGraph(h2048);
-
+      
+        
+        
+        //ex13
+       
+        int echec = 0;
+        int succes = 0;
+        int errone = 0;
+        
+        //boucle de 10^4 itérations
+        for (int k=0; k< 10000 ; k++) {
+            // générez un mot e à chaque itération de poids w = 124
+            Matrix err = x.errGen(124);
+            // calculez le mot y = x + e
+            Matrix y = x.add(err);
+            // décodez ce mot en utilisant la méthode decode sur round = 200 itérations
+            Matrix y_dec = graph.decode(y,200);
+            // comparez le résultat avec x
+            int erreur = 0;
+            if (y_dec.getElem(0, 0)==-1) {
+                erreur = -1;
+            }
+            else {
+                for (int i =0;i<x.getRows(); i++) {
+                    if ((x.getElem(0,i)) != y_dec.getElem(0,i)) {
+                    erreur += 1;
+                }
+            }
+                
+            // Déterminez si le décodage a réussi, échoué, ou s’il a renvoyé un mot erroné
+            if (erreur == -1) {
+                echec +=1;
+            }
+            if (erreur == 0) {
+                succes+=1;
+            }
+            else {
+                errone+=1;
+            }
+        }
+            
+        // on affiche le résultat
+        System.out.print("Echecs : "+echec+"\n");
+        System.out.print("Succes : "+succes+"\n");
+        System.out.print("Corrections érronées : "+errone+"\n");
     }
 }
