@@ -90,6 +90,24 @@ public class Main {
         affichage(e2,x,hbase,"2",mg);
         affichage(e3,x, hbase,"3",mg);
         affichage(e4,x,hbase,"4",mg);
+        
+        Matrix h2048 = loadMatrix("data/Matrix-2048-6144-5-15",2048,6144);
+        Matrix hsys2048 = h2048.sysTransform();
+        Matrix G2048 = hsys2048.genG();
+        
+        Matrix u2048 = new Matrix(1,G2048.getRows());
+        for (int i=0; i<u2048.getCols() ; i++) {
+            if(i%2==0) {
+                u2048.setElem(0,i,(byte)1);
+            }
+            else {
+                u2048.setElem(0,i,(byte)0);
+            }
+        }
+        
+        Matrix x = u2048.multiply(G2048)
+            
+        TGraph graph = new TGraph(h2048);
 
     }
 }
