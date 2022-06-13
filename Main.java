@@ -105,7 +105,7 @@ public class Main {
             }
         }
         
-        Matrix x = u2048.multiply(G2048)
+        Matrix x = u2048.multiply(G2048);
             
         TGraph graph = new TGraph(h2048);
       
